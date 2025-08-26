@@ -43,17 +43,9 @@ class StopEc2 implements ShouldQueue
                 'state'     => $state,
             ]);
 
-            $desc = $ec2->describeInstances([
-                'InstanceIds' => [$this->server->ec2_instance_id],
-            ]);
-
-            $instance = Arr::get($desc, 'Reservations.0.Instances.0', []);
-            $publicIp = Arr::get($instance, 'PublicIpAddress');
-            $state = Arr::get($instance, 'State.Name', $state);
-
             $this->server->updateQuietly([
-                'status' => $state,
-                'ip'     => $publicIp,
+                'status' => 'stopped',
+                'ip'     => null,
             ]);
 
         } catch (AwsException $e) {
