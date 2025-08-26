@@ -2,26 +2,66 @@
 
 namespace App\Jobs;
 
+use App\Models\Server;
+use Aws\Ec2\Ec2Client;
+use Aws\Exception\AwsException;
+use Aws\Laravel\AwsFacade as AWS;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class StartEc2 implements ShouldQueue
 {
-    use Queueable;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
-    public function __construct()
+    public function __construct(public Server $server)
     {
-        //
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
-        //
+        /** @var Ec2Client $ec2 */
+        $ec2 = AWS::createClient('ec2');
+
+        if (!$this->server->ec2_instance_id) {
+            Log::warning("StartEc2: No instance ID for server {$this->server->id}");
+            return;
+        }
+
+        try {
+            $result = $ec2->startInstances([
+                'InstanceIds' => [$this->server->ec2_instance_id],
+            ]);
+
+            $state = Arr::get($result, 'StartingInstances.0.CurrentState.Name', 'unknown');
+            Log::info("StartEc2: start requested for {$this->server->ec2_instance_id}", [
+                'server_id' => $this->server->id,
+                'state'     => $state,
+            ]);
+
+            $desc = $ec2->describeInstances([
+                'InstanceIds' => [$this->server->ec2_instance_id],
+            ]);
+
+            $instance = Arr::get($desc, 'Reservations.0.Instances.0', []);
+            $publicIp = Arr::get($instance, 'PublicIpAddress');
+            $state = Arr::get($instance, 'State.Name', $state);
+
+            $this->server->updateQuietly([
+                'status' => $state,
+                'ip'     => $publicIp,
+            ]);
+
+        } catch (AwsException $e) {
+            if ($e->getAwsErrorCode() === 'InvalidInstanceID.NotFound') {
+                Log::warning("StartEc2: instance not found {$this->server->ec2_instance_id}");
+                return;
+            }
+            throw $e;
+        }
     }
 }
