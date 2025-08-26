@@ -23,7 +23,6 @@ class CreateEc2 implements ShouldQueue
 
     public function __construct(public Server $server)
     {
-        // SerializesModels will reduce $server to its id safely
     }
 
     public function handle(): void

@@ -30,7 +30,7 @@ class ServerObserver
         }
     }
 
-    public function deleted(Server $server): void
+    public function deleting(Server $server): void
     {
         DeleteEc2::dispatch($server);
     }
