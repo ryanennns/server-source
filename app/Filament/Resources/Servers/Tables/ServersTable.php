@@ -20,16 +20,20 @@ class ServersTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('ip')
+                    ->label('IP Address')
                     ->searchable(),
                 TextColumn::make('port')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('ec2_instance_id')
+                    ->label('EC2 Instance ID')
                     ->searchable(),
                 TextColumn::make('region')
                     ->searchable(),
                 TextColumn::make('instance_type')
+                    ->label('Type')
                     ->searchable(),
+                TextColumn::make('status'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

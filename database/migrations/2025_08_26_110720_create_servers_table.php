@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('servers', function (Blueprint $table) {
@@ -16,6 +15,7 @@ return new class extends Migration
             $table->string('ec2_instance_id')->nullable();
             $table->string('region')->nullable();
             $table->string('instance_type')->nullable();
+            $table->enum('status', ['starting', 'started', 'stopping', 'stopped', 'terminated', 'pending'])->default('pending');
             $table->json('tags')->nullable();
             $table->timestamps();
         });
