@@ -28,4 +28,14 @@ class Server extends Model
     ];
 
     protected $guarded = [];
+
+    public function start(): bool
+    {
+        return $this->update(['status' => self::STATUS_STARTING]);
+    }
+
+    public function stop(): bool
+    {
+        return $this->update(['status' => self::STATUS_STOPPING]);
+    }
 }
