@@ -21,7 +21,11 @@ class CreateEc2 implements ShouldQueue
     /** Hardcode your instance type here */
     private const INSTANCE_TYPE = 't3.small';
 
-    public function __construct(public Server $server)
+    public function __construct(
+        public Server $server,
+        public string $instanceType = self::INSTANCE_TYPE,
+        public string $amiId = '',
+    )
     {
     }
 

@@ -4,6 +4,8 @@ namespace App\Filament\UserPanel\Pages;
 
 use App\Models\Server;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -19,13 +21,48 @@ class UserServerPage extends Page implements HasTable
     protected static ?string $navigationLabel = 'My Servers';
     protected static ?string $slug = 'my-servers';
 
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('create')
+                ->label('New Server')
+                ->icon('heroicon-o-plus')
+                ->color('primary')
+                ->schema([
+                    TextInput::make('name')
+                        ->label('Server Name')
+                        ->required()
+                        ->maxLength(255),
+
+                    Select::make('region')
+                        ->label('Region')
+                        ->options([
+                            'us-east-1' => 'US East (N. Virginia)',
+                            'us-west-2' => 'US West (Oregon)',
+                            'eu-central-1' => 'EU (Frankfurt)',
+                        ])
+                        ->required(),
+                ])
+                ->action(function (array $data) {
+                    Server::create([
+                        'name'     => $data['name'],
+                        'region'   => $data['region'],
+                        'status'   => Server::STATUS_PENDING,
+                        'user_id'  => auth()->id(),
+                    ]);
+
+                    $this->notify('success', 'Server creation started!');
+                }),
+        ];
+    }
+
     public function table(Table $table): Table
     {
         return $table
             ->query(
                 Server::query()
             )
-            ->actions(
+            ->recordActions(
                 [
                     Action::make('start')
                         ->label('Start')
