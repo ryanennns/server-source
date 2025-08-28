@@ -54,6 +54,9 @@ class CreateEc2 implements ShouldQueue
                 'MinCount'                          => 1,
                 'MaxCount'                          => 1,
                 'InstanceInitiatedShutdownBehavior' => 'stop',
+                'IamInstanceProfile'               => [
+                    'Name' => 'EC2xS3Access',
+                ],
                 'NetworkInterfaces'                 => [[
                     'AssociatePublicIpAddress' => true,
                     'DeviceIndex'              => 0,
