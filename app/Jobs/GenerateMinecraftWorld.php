@@ -17,19 +17,24 @@ class GenerateMinecraftWorld implements ShouldQueue
 
     public function handle(): void
     {
-        $server = Server::query()->createQuietly([
-            'name'   => 'worldgen-' . $this->minecraftWorld->getKey(),
-            'status' => Server::STATUS_PENDING,
-        ]);
+        try {
+            $server = Server::query()->createQuietly([
+                'name'   => 'worldgen-' . $this->minecraftWorld->getKey(),
+                'status' => Server::STATUS_PENDING,
+            ]);
 
-        $this->minecraftWorld->update(['server_id' => $server->getKey()]);
+            $this->minecraftWorld->update(['server_id' => $server->getKey()]);
 
-        CreateEc2::dispatchSync(
-            $server,
-            CreateEc2::INSTANCE_TYPE,
-            Server::FABRIC_1211_CHUNK_GEN
-        );
+            CreateEc2::dispatchSync(
+                $server,
+                CreateEc2::INSTANCE_TYPE,
+                Server::FABRIC_1211_CHUNK_GEN
+            );
 
-        $this->minecraftWorld->update(['status' => MinecraftWorld::STATUS_CREATING]);
+            $this->minecraftWorld->update(['status' => MinecraftWorld::HOST_PROVISIONED]);
+        } catch (\Throwable $e) {
+            $this->minecraftWorld->update(['status' => MinecraftWorld::STATUS_FAILED]);
+            throw $e;
+        }
     }
 }
