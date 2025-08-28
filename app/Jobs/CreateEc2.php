@@ -70,15 +70,15 @@ class CreateEc2 implements ShouldQueue
             $instanceId = Arr::get($result, 'Instances.0.InstanceId') ?? null;
 
             $ec2->waitUntil('InstanceRunning', [
-                'InstanceIds'  => [$instanceId],
-                '@waiter' => [
+                'InstanceIds' => [$instanceId],
+                '@waiter'     => [
                     'delay'       => 1,
                     'maxAttempts' => 10,
                 ]
             ]);
 
             $desc = $ec2->describeInstances(['InstanceIds' => [$instanceId]]);
-            $publicIp = $desc['Reservations'][0]['Instances'][0]['PublicIpAddress'] ?? null;
+            $publicIp = Arr::get($desc, 'Reservations.0.Instances.0.PublicIpAddress');
 
             Log::info("CreateEc2: launched instance for '{$nameTag}'", [
                 'instanceId' => $instanceId,
