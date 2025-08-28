@@ -19,7 +19,7 @@ class CreateEc2 implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /** Hardcode your instance type here */
-    private const INSTANCE_TYPE = 't3.small';
+    public const INSTANCE_TYPE = 't3.small';
 
     public function __construct(
         public Server $server,
@@ -46,7 +46,7 @@ class CreateEc2 implements ShouldQueue
             }
 
             // 2) Resolve AMI (env override or latest Amazon Linux 2023)
-            $imageId = $this->latestAl2023Ami($ec2);
+            $imageId = $this->amiId ?: $this->latestAl2023Ami($ec2);
 
             $result = $ec2->runInstances([
                 'ImageId'                           => $imageId,

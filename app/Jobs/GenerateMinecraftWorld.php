@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Jobs;
+
+use App\Models\MinecraftWorld;
+use App\Models\Server;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+
+class GenerateMinecraftWorld implements ShouldQueue
+{
+    use Queueable;
+
+    public function __construct(public MinecraftWorld $minecraftWorld)
+    {
+    }
+
+    public function handle(): void
+    {
+        $server = Server::query()->createQuietly([
+            'name'   => 'worldgen-' . $this->minecraftWorld->getKey(),
+            'status' => Server::STATUS_PENDING,
+        ]);
+
+        CreateEc2::dispatchSync($server, CreateEc2::INSTANCE_TYPE, Server::FABRIC_1211_CHUNK_GEN);
+    }
+}

@@ -40,7 +40,6 @@ class UserMinecraftWorlds extends Page implements HasTable
                         ->maxLength(255),
                     TextInput::make('version')
                         ->label('Minecraft Version')
-                        ->required()
                         ->maxLength(50),
                     TextInput::make('seed')
                         ->label('World Seed')

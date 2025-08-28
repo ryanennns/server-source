@@ -18,6 +18,8 @@ class Server extends Model
     public const STATUS_TERMINATED = 'terminated';
     public const STATUS_PENDING = 'pending';
 
+    public const FABRIC_1211_CHUNK_GEN = 'ami-05617397aca0a3271';
+
     public const STATUSES = [
         self::STATUS_STARTING,
         self::STATUS_STARTED,
