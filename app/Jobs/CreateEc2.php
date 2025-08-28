@@ -57,6 +57,7 @@ class CreateEc2 implements ShouldQueue
                 'NetworkInterfaces'                 => [[
                     'AssociatePublicIpAddress' => true,
                     'DeviceIndex'              => 0,
+                    'Groups'                   => [Server::MC_SERVER_SG]
                 ]],
                 'TagSpecifications'                 => [[
                     'ResourceType' => 'instance',

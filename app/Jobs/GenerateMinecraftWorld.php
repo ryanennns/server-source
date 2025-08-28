@@ -24,6 +24,10 @@ class GenerateMinecraftWorld implements ShouldQueue
 
         $this->minecraftWorld->update(['server_id' => $server->getKey()]);
 
-        CreateEc2::dispatchSync($server, CreateEc2::INSTANCE_TYPE, Server::FABRIC_1211_CHUNK_GEN);
+        CreateEc2::dispatchSync(
+            $server,
+            CreateEc2::INSTANCE_TYPE,
+            Server::FABRIC_1211_CHUNK_GEN
+        );
     }
 }
