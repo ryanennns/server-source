@@ -83,6 +83,10 @@ class UserMinecraftWorlds extends Page implements HasTable
                     ->label('World Name')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('version')
                     ->label('Version')
                     ->sortable()
