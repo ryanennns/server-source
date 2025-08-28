@@ -27,15 +27,18 @@ class MinecraftWorld extends Model
 
     public const STATUSES = [
         self::STATUS_PENDING,
+        self::HOST_PROVISIONED,
         self::SERVER_BOOTED,
         self::CHUNKS_GENERATED,
         self::DH_LODS_GENERATED,
         self::STATUS_FINISHED,
+        self::STATUS_FAILED,
     ];
 
     protected $guarded = [];
 
-    private const SERVER_BOOT_REGEX = '[Server thread/INFO]: Done';
+    public const SERVER_BOOT_REGEX = '/\[Server thread\/INFO\]: Done (.*)! For help, type \"help\"/';
+    public const CHUNKS_GENERATED_REGEX = "/\[Server thread\/INFO\]: \[Chunky\] Task finished for minecraft:overworld. Processed:/";
 
     public function server(): BelongsTo
     {
@@ -50,15 +53,24 @@ class MinecraftWorld extends Model
             ),
         ]);
 
-        return Str::contains(
-            Storage::disk('s3')->get("{$this->server->ec2_instance_id}-latest.log"),
-            self::SERVER_BOOT_REGEX
+        return !!preg_match(
+            self::SERVER_BOOT_REGEX,
+            Storage::disk('s3')->get("{$this->server->ec2_instance_id}-latest.log")
         );
     }
 
     public function hasGeneratedChunks(): bool
     {
-        return false;
+        Log::info("Checking if world has generated chunks", [
+            'log_contents' => Storage::disk('s3')->get(
+                "{$this->server->ec2_instance_id}-latest.log"
+            ),
+        ]);
+
+        return !!preg_match(
+            self::CHUNKS_GENERATED_REGEX,
+            Storage::disk('s3')->get("{$this->server->ec2_instance_id}-latest.log")
+        );
     }
 
     public function hasGeneratedDH(): bool
@@ -69,8 +81,8 @@ class MinecraftWorld extends Model
     public function updateStatus(): void
     {
         $serverHasBooted = $this->hasServerBooted();
-        $serverHasGeneratedChunks = $this->server->hasGeneratedChunks();
-        $serverHasGeneratedDH = $this->server->hasGeneratedDH();
+        $serverHasGeneratedChunks = $this->hasGeneratedChunks();
+        $serverHasGeneratedDH = $this->hasGeneratedDH();
         Log::info("Updating world status", [
             'server_has_booted'           => $serverHasBooted,
             'server_has_generated_chunks' => $serverHasGeneratedChunks,
