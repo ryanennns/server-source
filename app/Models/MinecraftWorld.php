@@ -14,6 +14,16 @@ class MinecraftWorld extends Model
     use HasUuids;
     use SoftDeletes;
 
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_CREATING = 'creating';
+    public const STATUS_FINISHED = 'finished';
+
+    public const STATUSES = [
+        self::STATUS_PENDING,
+        self::STATUS_CREATING,
+        self::STATUS_FINISHED,
+    ];
+
     protected $guarded = [];
 
     public function server(): BelongsTo

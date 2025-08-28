@@ -29,5 +29,7 @@ class GenerateMinecraftWorld implements ShouldQueue
             CreateEc2::INSTANCE_TYPE,
             Server::FABRIC_1211_CHUNK_GEN
         );
+
+        $this->minecraftWorld->update(['status' => MinecraftWorld::STATUS_CREATING]);
     }
 }

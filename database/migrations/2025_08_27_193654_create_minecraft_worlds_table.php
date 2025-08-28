@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\MinecraftWorld;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -10,6 +11,8 @@ return new class extends Migration {
         Schema::create('minecraft_worlds', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
+            $table->enum('status', MinecraftWorld::STATUSES)
+                ->default(MinecraftWorld::STATUS_PENDING);
             $table->string('seed')->nullable();
             $table->string('version')->nullable();
             $table->json('data_packs')->nullable();
