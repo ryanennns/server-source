@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->enum('status', ['starting', 'started', 'stopping', 'stopped', 'terminated', 'pending'])->default('pending');
             $table->json('tags')->nullable();
             $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 

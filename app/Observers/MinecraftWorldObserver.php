@@ -11,4 +11,9 @@ class MinecraftWorldObserver
     {
         GenerateMinecraftWorld::dispatch($minecraftWorld);
     }
+
+    public function deleted(MinecraftWorld $minecraftWorld)
+    {
+
+    }
 }

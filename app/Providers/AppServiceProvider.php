@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\MinecraftWorld;
 use App\Models\Server;
+use App\Observers\MinecraftWorldObserver;
 use App\Observers\ServerObserver;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,5 +18,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Server::observe(ServerObserver::class);
+        MinecraftWorld::observe(MinecraftWorldObserver::class);
     }
 }

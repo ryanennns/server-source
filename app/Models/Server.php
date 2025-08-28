@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Server extends Model
 {
     use HasFactory;
     use HasUuids;
+    use SoftDeletes;
 
     public const STATUS_STARTING = 'starting';
     public const STATUS_STARTED = 'started';
