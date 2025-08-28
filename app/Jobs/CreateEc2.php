@@ -84,15 +84,16 @@ class CreateEc2 implements ShouldQueue
                 'ip'              => $publicIp,
                 'instance_type'   => self::INSTANCE_TYPE,
                 'status'          => Server::STATUS_STARTED,
+                'region'          => config('aws.region', 'us-east-2'),
             ]);
         } catch (AwsException $e) {
             Log::error("CreateEc2 AWS error for '{$nameTag}': {$e->getAwsErrorMessage()}", [
                 'code' => $e->getAwsErrorCode(),
             ]);
-             throw $e;
+            throw $e;
         } catch (\Throwable $e) {
             Log::error("CreateEc2 error for '{$nameTag}': {$e->getMessage()}");
-             throw $e;
+            throw $e;
         }
     }
 

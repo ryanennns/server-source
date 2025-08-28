@@ -14,6 +14,8 @@ class MinecraftWorldObserver
 
     public function deleted(MinecraftWorld $minecraftWorld)
     {
-
+        if ($minecraftWorld->server) {
+            $minecraftWorld->server->delete();
+        }
     }
 }

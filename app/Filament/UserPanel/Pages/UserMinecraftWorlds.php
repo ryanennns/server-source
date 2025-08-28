@@ -3,7 +3,6 @@
 namespace App\Filament\UserPanel\Pages;
 
 use App\Models\MinecraftWorld;
-use App\Models\Server;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -73,21 +72,11 @@ class UserMinecraftWorlds extends Page implements HasTable
                 MinecraftWorld::query()
             )
             ->recordActions([
-                Action::make('start')
-                    ->label('Start')
-                    ->color('success')
-                    ->action(fn(Server $record) => $record->start()),
-
-                Action::make('stop')
-                    ->label('Stop')
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->action(fn(Server $record) => $record->stop()),
-
                 Action::make('delete')
                     ->label('Delete')
                     ->color('danger')
                     ->requiresConfirmation()
+                    ->action(fn($record) => $record->delete())
             ])
             ->columns([
                 TextColumn::make('name')
