@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class MinecraftWorld extends Model
 {
@@ -89,23 +88,22 @@ class MinecraftWorld extends Model
             'server_has_generated_dh'     => $serverHasGeneratedDH,
         ]);
 
-        if ($this->status === self::STATUS_PENDING && $serverHasBooted) {
-            $this->update(['status' => self::SERVER_BOOTED]);
-        }
-
-        if ($this->status === self::SERVER_BOOTED && $serverHasGeneratedChunks) {
-            $this->update(['status' => self::CHUNKS_GENERATED]);
-        }
-
-        if ($this->status === self::CHUNKS_GENERATED && $serverHasGeneratedDH) {
+        if ($serverHasGeneratedDH) {
             $this->update(['status' => self::DH_LODS_GENERATED]);
+
+            return;
         }
 
-        if ($this->status === self::DH_LODS_GENERATED && $this->status !== self::STATUS_FINISHED) {
-            $this->update(['status' => self::STATUS_FINISHED]);
-            $this->server->terminateInstance();
+        if ($serverHasGeneratedChunks) {
+            $this->update(['status' => self::CHUNKS_GENERATED]);
+
+            return;
         }
 
-        Log::info("World status updated", ['new_status' => $this->status]);
+        if ($serverHasBooted) {
+            $this->update(['status' => self::SERVER_BOOTED]);
+
+            return;
+        }
     }
 }

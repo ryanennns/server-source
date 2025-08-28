@@ -16,7 +16,7 @@ class WorldGenerationStatusCheck implements ShouldQueue
         MinecraftWorld::query()
             ->whereNotIn(
                 'status',
-                [MinecraftWorld::STATUS_PENDING, MinecraftWorld::STATUS_FINISHED]
+                [MinecraftWorld::STATUS_PENDING, MinecraftWorld::STATUS_FINISHED, MinecraftWorld::STATUS_FAILED]
             )
             ->chunk(
                 10,
