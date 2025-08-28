@@ -78,6 +78,16 @@ class CreateEc2 implements ShouldQueue
             ]);
 
             $desc = $ec2->describeInstances(['InstanceIds' => [$instanceId]]);
+
+            $interfaceId = Arr::get($desc, 'Reservations.0.Instances.0.NetworkInterfaces.0.NetworkInterfaceId');
+
+            $response = $ec2->modifyNetworkInterfaceAttribute([
+                'NetworkInterfaceId' => $interfaceId,
+                'Groups'             => [Server::MC_SERVER_SG],
+            ]);
+
+            Log::info('Snickers', json_decode(json_encode($response), true));
+
             $publicIp = Arr::get($desc, 'Reservations.0.Instances.0.PublicIpAddress');
 
             Log::info("CreateEc2: launched instance for '{$nameTag}'", [
