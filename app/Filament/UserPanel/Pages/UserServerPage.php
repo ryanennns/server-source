@@ -11,6 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Contracts\View\View;
 
 class UserServerPage extends Page implements HasTable
 {
@@ -37,18 +38,18 @@ class UserServerPage extends Page implements HasTable
                     Select::make('region')
                         ->label('Region')
                         ->options([
-                            'us-east-1' => 'US East (N. Virginia)',
-                            'us-west-2' => 'US West (Oregon)',
+                            'us-east-1'    => 'US East (N. Virginia)',
+                            'us-west-2'    => 'US West (Oregon)',
                             'eu-central-1' => 'EU (Frankfurt)',
                         ])
                         ->required(),
                 ])
                 ->action(function (array $data) {
                     Server::create([
-                        'name'     => $data['name'],
-                        'region'   => $data['region'],
-                        'status'   => Server::STATUS_PENDING,
-                        'user_id'  => auth()->id(),
+                        'name'    => $data['name'],
+                        'region'  => $data['region'],
+                        'status'  => Server::STATUS_PENDING,
+                        'user_id' => auth()->id(),
                     ]);
 
                     $this->notify('success', 'Server creation started!');

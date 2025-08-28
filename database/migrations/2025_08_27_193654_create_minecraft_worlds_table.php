@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('minecraft_worlds', function (Blueprint $table) {
@@ -15,6 +14,12 @@ return new class extends Migration
             $table->string('version')->nullable();
             $table->json('data_packs')->nullable();
             $table->text('s3_path')->nullable();
+
+            $table->bigInteger('user_id')->index();
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }
