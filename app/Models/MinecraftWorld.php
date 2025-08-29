@@ -36,6 +36,10 @@ class MinecraftWorld extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'options' => 'array',
+    ];
+
     public const SERVER_BOOT_REGEX = '/\[Server thread\/INFO\]: Done (.*)! For help, type \"help\"/';
     public const CHUNKS_GENERATED_REGEX = "/\[Server thread\/INFO\]: \[Chunky\] Task finished for minecraft:overworld. Processed:/";
 
