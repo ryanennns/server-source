@@ -13,7 +13,6 @@ return new class extends Migration {
             $table->string('name');
             $table->enum('status', MinecraftWorld::STATUSES)
                 ->default(MinecraftWorld::STATUS_PENDING);
-            $table->json('options')->default(json_encode([]));
             $table->string('seed')->nullable();
             $table->string('version')->nullable();
             $table->json('data_packs')->nullable();

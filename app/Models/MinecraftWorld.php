@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -46,6 +47,11 @@ class MinecraftWorld extends Model
     public function server(): BelongsTo
     {
         return $this->belongsTo(Server::class);
+    }
+
+    public function options(): HasMany
+    {
+        return $this->hasMany('world_options');
     }
 
     public function hasServerBooted(): bool
