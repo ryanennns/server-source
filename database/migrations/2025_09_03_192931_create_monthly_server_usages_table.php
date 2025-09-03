@@ -11,11 +11,12 @@ return new class extends Migration {
         Schema::create('monthly_server_usages', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('server_id');
-            $table->uuid('user_id');
+            $table->bigInteger('user_id');
             $table->timestamp('starting_at')
                 ->default(
                     Carbon::parse('first day of this month 00:00:00')
                 );
+            $table->bigInteger('uptime_in_seconds')->default(0);
             $table->timestamps();
         });
     }
