@@ -43,16 +43,23 @@ class StartEc2 implements ShouldQueue
                 'state'     => $state,
             ]);
 
+            $ec2->waitUntil('InstanceRunning', [
+                'InstanceIds' => [$this->server->ec2_instance_id],
+                '@waiter'     => [
+                    'delay'       => 1,
+                    'maxAttempts' => 10,
+                ]
+            ]);
+
             $desc = $ec2->describeInstances([
                 'InstanceIds' => [$this->server->ec2_instance_id],
             ]);
 
             $instance = Arr::get($desc, 'Reservations.0.Instances.0', []);
             $publicIp = Arr::get($instance, 'PublicIpAddress');
-            $state = Arr::get($instance, 'State.Name', $state);
 
             $this->server->updateQuietly([
-                'status' => $state,
+                'status' => Server::STATUS_STARTED,
                 'ip'     => $publicIp,
             ]);
 

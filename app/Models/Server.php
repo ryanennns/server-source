@@ -21,7 +21,8 @@ class Server extends Model
     public const STATUS_PENDING = 'pending';
 
     public const FABRIC_1211_CHUNK_GEN = 'ami-05617397aca0a3271';
-    public const MC_SERVER_SG = 'sg-0005320e4601d63a8';
+    public const VANILLA_MINECRAFT_1218 = 'ami-055a5609252136ea9';
+    public const MC_SERVER_SG = 'sg-0cc7a0084cc4aa94f';
 
     public const STATUSES = [
         self::STATUS_STARTING,

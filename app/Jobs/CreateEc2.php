@@ -16,10 +16,12 @@ use Illuminate\Support\Facades\Log;
 
 class CreateEc2 implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
-    /** Hardcode your instance type here */
-    public const INSTANCE_TYPE = 't3.small';
+    public const INSTANCE_TYPE = 't3a.small';
 
     public function __construct(
         public Server $server,
@@ -54,7 +56,7 @@ class CreateEc2 implements ShouldQueue
                 'MinCount'                          => 1,
                 'MaxCount'                          => 1,
                 'InstanceInitiatedShutdownBehavior' => 'stop',
-                'IamInstanceProfile'               => [
+                'IamInstanceProfile'                => [
                     'Name' => 'EC2xS3Access',
                 ],
                 'NetworkInterfaces'                 => [[
@@ -105,7 +107,7 @@ class CreateEc2 implements ShouldQueue
                 'ip'              => $publicIp,
                 'instance_type'   => self::INSTANCE_TYPE,
                 'status'          => Server::STATUS_STARTED,
-                'region'          => config('aws.region', 'us-east-2'),
+                'region'          => config('aws.region', 'us-east-1'),
             ]);
         } catch (AwsException $e) {
             Log::error("CreateEc2 AWS error for '{$nameTag}': {$e->getAwsErrorMessage()}", [

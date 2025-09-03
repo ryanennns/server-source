@@ -17,6 +17,9 @@ return new class extends Migration {
             $table->string('instance_type')->nullable();
             $table->enum('status', ['starting', 'started', 'stopping', 'stopped', 'terminated', 'pending'])->default('pending');
             $table->json('tags')->nullable();
+
+            $table->integer('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
 
             $table->softDeletes();

@@ -12,7 +12,11 @@ class ServerObserver
 {
     public function created(Server $server): void
     {
-        CreateEc2::dispatch($server);
+        CreateEc2::dispatch(
+            $server,
+            CreateEc2::INSTANCE_TYPE,
+            Server::VANILLA_MINECRAFT_1218
+        );
     }
 
     public function updated(Server $server): void

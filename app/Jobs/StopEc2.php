@@ -33,18 +33,20 @@ class StopEc2 implements ShouldQueue
         }
 
         try {
-            $result = $ec2->stopInstances([
+            $ec2->stopInstances([
                 'InstanceIds' => [$this->server->ec2_instance_id],
             ]);
 
-            $state = Arr::get($result, 'StoppingInstances.0.CurrentState.Name', 'unknown');
-            Log::info("StopEc2: stop requested for {$this->server->ec2_instance_id}", [
-                'server_id' => $this->server->id,
-                'state'     => $state,
+            $ec2->waitUntil('InstanceRunning', [
+                'InstanceIds' => [$this->server->ec2_instance_id],
+                '@waiter'     => [
+                    'delay'       => 1,
+                    'maxAttempts' => 10,
+                ]
             ]);
 
             $this->server->updateQuietly([
-                'status' => 'stopped',
+                'status' => Server::STATUS_STOPPED,
                 'ip'     => null,
             ]);
 

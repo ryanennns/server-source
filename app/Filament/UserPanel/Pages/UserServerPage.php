@@ -51,8 +51,6 @@ class UserServerPage extends Page implements HasTable
                         'status'  => Server::STATUS_PENDING,
                         'user_id' => auth()->id(),
                     ]);
-
-                    $this->notify('success', 'Server creation started!');
                 }),
         ];
     }
