@@ -35,21 +35,24 @@ class UserServerPage extends Page implements HasTable
                         ->required()
                         ->maxLength(255),
 
-                    Select::make('region')
-                        ->label('Region')
+                    Select::make('instance_type')
+                        ->label('Instance Type')
                         ->options([
-                            'us-east-1'    => 'US East (N. Virginia)',
-                            'us-west-2'    => 'US West (Oregon)',
-                            'eu-central-1' => 'EU (Frankfurt)',
+                            't3a.micro'  => '<1GB RAM',
+                            't3a.small'  => '2GB RAM',
+                            't3a.medium' => '4GB RAM',
+                            't3a.large'  => '8GB RAM',
+                            't3a.xlarge' => '16GB RAM',
                         ])
+                        ->default('us-east-1')
                         ->required(),
                 ])
                 ->action(function (array $data) {
                     Server::create([
-                        'name'    => $data['name'],
-                        'region'  => $data['region'],
-                        'status'  => Server::STATUS_PENDING,
-                        'user_id' => auth()->id(),
+                        'name'          => $data['name'],
+                        'instance_type' => $data['instance_type'],
+                        'status'        => Server::STATUS_PENDING,
+                        'user_id'       => auth()->id(),
                     ]);
                 }),
         ];
@@ -103,6 +106,10 @@ class UserServerPage extends Page implements HasTable
                     ->label('Created')
                     ->dateTime('M d, Y')
                     ->sortable(),
+
+                TextColumn::make('monthlyServerUsages.uptime_in_seconds')
+                    ->label('Usage')
+                    ->formatStateUsing(fn($state) => gmdate('H:i:s', $state))
             ])->paginated([10, 25]);
     }
 }

@@ -24,6 +24,10 @@ class UserMinecraftWorlds extends Page implements HasTable
     protected static ?string $title = 'My Worlds';
     protected static ?string $slug = 'my-worlds';
 
+    public static function canAccess(): bool
+    {
+        return false;
+    }
 
     protected function getHeaderActions(): array
     {
