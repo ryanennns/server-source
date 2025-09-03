@@ -17,6 +17,8 @@ class ServerObserver
             CreateEc2::INSTANCE_TYPE,
             Server::VANILLA_MINECRAFT_1218
         );
+
+        $server->monthlyServerUsages()->create(['user_id' => $server->user_id ]);
     }
 
     public function updated(Server $server): void

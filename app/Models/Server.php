@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Server extends Model
@@ -43,5 +44,10 @@ class Server extends Model
     public function stop(): bool
     {
         return $this->update(['status' => self::STATUS_STOPPING]);
+    }
+
+    public function monthlyServerUsages(): HasMany
+    {
+        return $this->hasMany(MonthlyServerUsage::class);
     }
 }
